@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  modded-nanogpt:
+    image: es-dev:0.1.0
+    container_name: es-dev
+    network_mode: "host"        # set network mode to host to allow the container to access the host's network stack
+    command: sleep infinity     
+    ipc: host                   
+    shm_size: 16g
+    working_dir: /root/workspace/understanding-es
+    environment:
+      - HTTP_PROXY=http://127.0.0.1:7890
+      - HTTPS_PROXY=http://127.0.0.1:7890
+      - no_proxy=localhost,127.0.0.1
+      - NO_PROXY=localhost,127.0.0.1
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+    ulimits:
+      memlock: -1
+      stack: 67108864
+    volumes:
+      - .:/root/workspace/understanding-es
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
